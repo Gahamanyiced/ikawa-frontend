@@ -117,7 +117,7 @@ export default function componentName() {
                         type='text'
                         className='form-control only-border-bottom bg-white'
                       />
-                      <label htmlFor='fname' className='fs--16'>
+                      <label for='fname' className='fs--16'>
                         Full Name
                       </label>
                     </div>
@@ -129,7 +129,7 @@ export default function componentName() {
                         type='text'
                         className='form-control only-border-bottom bg-white'
                       />
-                      <label htmlFor='email' className='fs--16'>
+                      <label for='email' className='fs--16'>
                         Email
                       </label>
                     </div>
@@ -141,7 +141,7 @@ export default function componentName() {
                         rows='1'
                         className='form-control only-border-bottom bg-white'
                       />
-                      <label htmlFor='message' className='fs--16'>
+                      <label for='message' className='fs--16'>
                         Your Message/Feedback
                       </label>
                     </div>

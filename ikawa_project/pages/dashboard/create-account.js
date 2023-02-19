@@ -1,44 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 
 import Nav from '../../compontents/Layouts/Nav';
 
 export default function CreateAccount() {
-
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [role, setRole] = useState('user');
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch('https://ikawa-backend.onrender.com/api/v1/auth/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          role,
-        }),
-      });
-      const result = await response.json();
-      if (response.status === 201) {
-        console.log('Success:', result);
-        // Redirect the user to the login page or show a success message
-      } else {
-        console.error('Error:', result.message);
-        // Show an error message
-      }
-    } catch (error) {
-      console.error('Error:', error.message);
-      // Show an error message
-    }
-  };
-
-
   return (
     <>
       <Head>
@@ -56,18 +22,17 @@ export default function CreateAccount() {
               Welcome to the new, simple way to know about{' '}
               <span className='font-weight-bold'>Rwandan coffee</span>
             </p>
-            <form className='pt--0' onSubmit={handleSubmit}>
+            <form className='pt--0'>
               <div className='form-group position-relative  pb-mobile-1'>
                 <label className='mb--0' htmlFor='email'>
                   Name
                 </label>
                 <input
                   type='text'
-                  name='name'
+                  name='_name'
                   placeholder='Your name'
                   className='form-control form-control-md'
                   autoComplete='off'
-                  onChange={(e) => setName(e.target.value)}
                 />
               </div>
               <div className='form-group position-relative  pb-mobile-1'>
@@ -80,14 +45,13 @@ export default function CreateAccount() {
                   placeholder='Ex: someone@gmail.com'
                   className='form-control form-control-md pb-mobile-1'
                   autoComplete='off'
-                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className='form-group position-relative pb-mobile-1'>
                 <label className='mb--0' htmlFor='password'>
                   Password
                 </label>
-                <input onChange={(e) => setPassword(e.target.value)}
+                <input
                   type='password'
                   name='password'
                   placeholder='Min. 8 characters'
@@ -99,18 +63,15 @@ export default function CreateAccount() {
                 <label className='mb--0' htmlFor='select_options'>
                   What is your role?
                 </label>
-                <select onChange={(e) => setRole(e.target.value)}
+                <select
                   id='select_options'
                   className='form-control form-control-md bs-select'>
-                  <option value='user'>User</option>
-                  <option value='admin'>Admin</option>
-                  <option value='farmer'>Farmer</option>
-                  
+                  <option value='1'>Farmer</option>
                 </select>
               </div>
               <div className='form-group mt--15 pb-mobile-1'>
                 <label className='form-checkbox form-checkbox-primary mb--0'>
-                  <input type='checkbox' name='checkbox' defaultChecked />
+                  <input type='checkbox' name='checkbox' checked />
                   <i></i>{' '}
                   <span className='fs--15'>
                     <span className='font-weight-bold'>I agree to the </span>
@@ -123,7 +84,7 @@ export default function CreateAccount() {
                 </label>
               </div>
               <div className='form-group position-relative pt--10 pb--20'>
-                <button className='btn btn-primary w-100p' type='submit'>
+                <button className='btn btn-primary w-100p'>
                   Create account
                 </button>
               </div>

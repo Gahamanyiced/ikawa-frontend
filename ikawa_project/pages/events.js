@@ -1,34 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 
 import Wrapper from '../compontents/Layouts/Wrapper';
 import Contents from '../compontents/Layouts/Contents';
-import {getAllEvents} from '../compontents/Dashboard/services/EventsDataService';
 
 export default function Events() {
-  const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-
-        const data = await getAllEvents();
-        
-        setEvents(data);
-        setLoading(false);
-        
-
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    fetchData();
-  }, []);
-
   return (
     <Wrapper isNavTransparent={true}>
       <Contents pt='100'>
@@ -76,34 +54,41 @@ export default function Events() {
         </div>
       </Contents>
 
-      {loading ? (
-        <h5 pt='0'>Loading...</h5>
-      ) : (
-        <Contents pt='0'>
-          <div className={`row gutters-lg`}>
-            <div className='col-12 col-md-12'>
-              <span className='font-weight-medium d-block mb--40 fs--20'>
-                Oldest Events
-              </span>
-            </div>
-            {events.events.map(event => (
-              <div
-                key={event.id}
-                onClick={() => router.push('/event')}
-                className='col-12 col-md-6 pb--20 pointer'>
-                <img src={event.picture} className='w-100p brr-5' alt='' />
-                <h4 className='fs--20 pt--20 font-weight-medium w--80p'>
-                  {event.name}
-                </h4>
-                <p className='pb--20 pt--10'>
-                  {event.details}
-                </p>
-              </div>
-            ))}
-             
+      <Contents pt='0'>
+        <div className={`row gutters-lg`}>
+          <div className='col-12 col-md-12'>
+            <span className='font-weight-medium d-block mb--40 fs--20'>
+              Oldest Events
+            </span>
           </div>
-        </Contents>
-      )}
+          <div
+            onClick={() => router.push('/event')}
+            className='col-12 col-md-6 pb--20 pointer'>
+            <img src='/images/letstalk.jpg' className='w-100p brr-5' alt='' />
+            <h4 className='fs--20 pt--20 font-weight-medium w--80p'>
+              Let’s Talk Coffee® Rwanda 2019
+            </h4>
+            <p className='pb--20 pt--10'>
+              Let’s Talk Coffee® Rwanda 2017 took place in Kigali, gathering
+              more than 250 farmers with buyers, government, philanthropy, and
+              other supply chain stakeholders.
+            </p>
+          </div>
+          <div
+            onClick={() => router.push('/event')}
+            className='col-12 col-md-6 pointer'>
+            <img src='/images/golden.jpg' className='w-100p brr-5' alt='' />
+            <h4 className='fs--20 pt--20 font-weight-medium w--80p'>
+              Golden Barista 2019 Champion
+            </h4>
+            <p className='pb--20 pt--10'>
+              This Golden Barista Championship is an initiative that carefully
+              focuses on promoting coffee culture in Kigali and rural areas, but
+              also encouraging baristas to sharpen their skills.
+            </p>
+          </div>
+        </div>
+      </Contents>
     </Wrapper>
   );
 }
