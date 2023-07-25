@@ -15,17 +15,12 @@ export const getAllEvents = async () => {
 
   } catch (error) {
     console.error(error);
+    console.log("error")
   }
 
 };
 
-const eventData = {
-    "name":"Tourist event",
-    "details": "Venue:Kanombe",
-    "date": "2022-12-31"
-}
-
-export const addEvent = async (data) => {
+export const addEvent = async (eventData) => {
   try {
     const response = await fetch('https://ikawa-backend.onrender.com/api/v1/events/', {
       method: 'POST',
@@ -33,10 +28,10 @@ export const addEvent = async (data) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
-      body: data
+      body: JSON.stringify(eventData),
     });
     const data = await response.json();
-    console.log(data);
+
     return data;
   } catch (error) {
     console.error(error);
@@ -65,15 +60,41 @@ export const deleteEvent = async (id) => {
   
 };
 
-export const updateEvent = event => {
-  fetch(`https://ikawa-backend.onrender.com/api/v1/events/${event.id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+export const updateEvent = (event, id) => {
+  fetch(`https://ikawa-backend.onrender.com/api/v1/events/${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      body: JSON.stringify(event)
-    })
-    .then(res => res.json())
-    .then(data => {
-      return data
+    },
+    body: JSON.stringify(event),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log('event updated');
+      return data;
     });
+};
+
+
+
+export const fetchEvent = async (eventId) => {
+  try {
+
+    const response = await fetch(`https://ikawa-backend.onrender.com/api/v1/events/${eventId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    const data = await response.json();
+    console.log(data)
+    
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch event data');
+  }
 };

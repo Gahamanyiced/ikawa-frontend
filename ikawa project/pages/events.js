@@ -86,6 +86,7 @@ export default function Events() {
                 Oldest Events
               </span>
             </div>
+            
             {events.events.map(event => (
               <div
                 key={event.id}

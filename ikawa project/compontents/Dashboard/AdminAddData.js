@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -14,6 +14,8 @@ import AddNewCoffeeRoaster from './Forms/AddNewCoffeeRoaster';
 import AddNewCoffeeExporter from './Forms/AddNewCoffeeExporter';
 import AddNewCoffeeShop from './Forms/AddNewCoffeeShop';
 import AddNewAnnouncement from './Forms/AddNewAnnouncement';
+import { updateEvent, fetchEvent } from './services/EventsDataService';
+import {fetchArticle} from './services/ArticlesDataService';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,25 +36,86 @@ export default function AdminAddData() {
   const classes = useStyles();
   const [expanded, setExpanded] = React.useState(false);
 
+  const [eventData, setEventData] = useState(null);
+  const [articleData, setArticleData] = useState(null);
+
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  useEffect(() => {
+    const fetchEventData = async () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const eventId = urlParams.get('eventId');
+
+        if (eventId && /^[0-9a-fA-F]{24}$/.test(eventId)) {
+
+          const eventData = await fetchEvent(eventId);
+
+          setEventData(eventData);
+          setExpanded('panel2');
+          
+        } else {
+          setEventData(null);
+          setExpanded(false);
+        }
+      } catch (error) {
+        console.error('Error fetching event data:', error);
+      }
+    };
+
+    const fetchArticleData = async () => {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('articleId');
+
+        if (articleId && /^[0-9a-fA-F]{24}$/.test(articleId)) {
+          const articleData = await fetchArticle(articleId);
+          setArticleData(articleData);
+          setExpanded('panel1'); 
+        } else {
+          setArticleData(null);
+          setExpanded(false);
+        }
+      } catch (error) {
+        console.error('Error fetching article data:', error);
+      }
+    };
+
+    fetchArticleData();
+    fetchEventData();
+  }, []);
+
+
+  const formatDate = (dateString) => {
+    const dateObject = new Date(dateString);
+    const formattedDate = dateObject.toISOString().split('T')[0];
+    return formattedDate;
+  };
+
   return (
     <div className={`${classes.root} pt--30`}>
+
       <Accordion
         expanded={expanded === 'panel1'}
-        onChange={handleChange('panel1')}>
+        onChange={handleChange('panel1')}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls='panel1bh-content'
-          id='panel1bh-header'>
+          id='panel1bh-header'
+        >
           <Typography className={classes.heading}>New article</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <AddNewArticle />
+          {articleData ? (
+            <AddNewArticle articleData={articleData} />
+          ) : (
+            <AddNewArticle />
+          )}
         </AccordionDetails>
-      </Accordion>
+      </Accordion>    
 
       <Accordion
         expanded={expanded === 'panel2'}
@@ -64,9 +127,14 @@ export default function AdminAddData() {
           <Typography className={classes.heading}>New event</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <AddNewEvent />
+          {eventData ? (
+            <AddNewEvent eventData={eventData} />
+          ) : (
+            <AddNewEvent />
+          )}
         </AccordionDetails>
       </Accordion>
+
 
       <Accordion
         expanded={expanded === 'panel3'}

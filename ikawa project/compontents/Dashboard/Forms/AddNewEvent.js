@@ -1,44 +1,65 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import Input from '../FormElements/Input';
 import FileUploader from '../FormElements/FileUploader';
 import Button from '../FormElements/Button';
-import {addEvent} from '../services/EventsDataService';
+import { addEvent, updateEvent } from '../services/EventsDataService'; 
 
-export default function AddNewEvent() {
-  const [event, setEvent] = useState(null);
-  const [name, setName] = useState(null);
-  const [date, setDate] = useState(null);
-  const [details, setDetails] = useState(null);
+export default function AddNewEvent({ eventData }) {
+  const [eventId, setEventId] = useState(null);
+  const [name, setName] = useState('');
+  const [date, setDate] = useState('');
+  const [details, setDetails] = useState('');
+
+  useEffect(() => {
+
+    if (eventData) {
+      setEventId(eventData.event._id || null);
+      setName(eventData.event.name || '');
+      setDate(eventData.event.date ? formatDate(eventData.event.date) : '');
+      setDetails(eventData.event.details || '');
+    }
+  }, [eventData]);
+
+  const formatDate = (dateString) => {
+    const dateObject = new Date(dateString);
+    const formattedDate = dateObject.toISOString().split('T')[0];
+    return formattedDate;
+  };
+
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     try {
+      if (eventId) {
 
-      const data = await addEvent({
-        name,
-        date,
-        details
-      })
+        const data = await updateEvent({
+          name,
+          date,
+          details,
+        }, eventId);
 
-      console.log({
-        name,
-        date,
-        details
-      })
-
-      console.log(data)
+        console.log('Event updated:', data);
+      } else {
+        // If eventId doesn't exist, it means we are adding a new event
+        console.log(name, date, details)
+        const data = await addEvent({
+          name,
+          date,
+          details,
+        });
+        
+        console.log('New event added:', data);
+      }
     } catch (error) {
-      console.log(error)
+      console.error('Error adding/updating event:', error);
     }
-    
   };
 
   return (
     <form onSubmit={handleSubmit} className='w-100p'>
-      {name}
       <div className='row gutter-md'>
-        
         <Input
           type='text'
           label='Name of the event'
@@ -48,7 +69,8 @@ export default function AddNewEvent() {
           placeholder='Ex: Coffee event'
           size='col-12 col-md-6'
           bgColor='bg-white'
-          onChange={(e) => setName(e.target.value)}
+          value={name}
+          onChange={(value) => setName(value)}
         />
 
         <Input
@@ -60,7 +82,8 @@ export default function AddNewEvent() {
           placeholder='Ex: 07/09/2021'
           size='col-12 col-md-6'
           bgColor='bg-white'
-          onChange={(e) => setDate(e.target.value)}
+          value={date}
+          onChange={(value) => setDate(value)}
         />
 
         <FileUploader
@@ -82,12 +105,13 @@ export default function AddNewEvent() {
           placeholder='About the event'
           size='col-12 col-md-6'
           bgColor='bg-white'
-          onChange={(e) => setDetails(e.target.value)}
+          value={details}
+          onChange={(value) => setDetails(value)}
         />
 
         <Button
           offset='offset-md-3'
-          label='Post event'
+          label={eventId ? 'Update event' : 'Post event'}
           size='col-12 col-md-6'
           marginTop='20'
           type='submit'

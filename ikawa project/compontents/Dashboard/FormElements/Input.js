@@ -6,11 +6,20 @@ export default function Input({
   placeholder,
   isRequired,
   name,
+  value = '',
   id,
   size,
   bgColor,
   extraClass,
+  onChange,
 }) {
+
+  const handleChange = (event) => {
+    if (onChange) {
+      onChange(event.target.value);
+    }
+  };
+
   return (
     <div className={size}>
       <div className='form-group position-relative'>
@@ -20,10 +29,12 @@ export default function Input({
         <input
           type={type}
           name={name}
+          value={value}
           placeholder={placeholder}
           className={`form-control ${bgColor} ${extraClass ? extraClass : " "}`}
           autoComplete='off'
           required={isRequired}
+          onChange={handleChange}
         />
       </div>
     </div>

@@ -107,7 +107,7 @@ export default function Articles() {
                       </td>
                       <td className='no-print'>
                         <span>
-                          <Link href='/'>
+                          <Link href={`/dashboard/admin?articleId=${article._id}`} >
                             <i className='fi fi-pencil mr--20 text-success pointer' data-id={article._id}></i>
                           </Link>
                           <i className='fi fi-thrash text-danger pointer' data-id={article._id} onClick={e=> handleDelete(e)}></i>

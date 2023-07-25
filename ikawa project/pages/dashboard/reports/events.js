@@ -15,7 +15,6 @@ export default function Events() {
     const eventId = e.target.dataset.id;
     try {
       const data = await deleteEvent(eventId);
-      
       fetchEvents()
       setLoading(false);
     } catch (error) {
@@ -29,8 +28,6 @@ export default function Events() {
         const data = await getAllEvents();
         setEvents(data?.events);
         setLoading(false);
-
-        console.log(data)
 
       } catch (error) {
         console.error(error);
@@ -76,7 +73,7 @@ export default function Events() {
                       <td>{event.date}</td>
                       <td className='no-print'>
                         <span>
-                          <Link href='/'>
+                          <Link href={`/dashboard/admin?eventId=${event._id}`} >
                             <i className='fi fi-pencil mr--20 text-success pointer' data-id={event._id}></i>
                           </Link>
                           <i className='fi fi-thrash text-danger pointer' data-id={event._id} onClick={ e => handleDelete(e)}></i>
